@@ -15,7 +15,17 @@ public class JConnectedGraph {
   // run(a, c) == true
   // run(b, d) == false
   public static boolean run(JNode source, JNode target) {
-    throw new RuntimeException("Not implemented");
+      if(source == target){
+		  return true;
+	  }
+	  
+	  for(JNode child : source.edges) {
+		  if(JConnectedGraph.run(child,target)){
+			  return true;
+		  }
+	  }
+	  
+	  return false;
   }
 
   public static class JNode {
