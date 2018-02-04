@@ -1,5 +1,6 @@
 package com.intenthq.challenge;
 
+
 import java.util.Collections;
 import java.util.List;
 
@@ -14,11 +15,34 @@ public class JConnectedGraph {
   // run(a, b) == true
   // run(a, c) == true
   // run(b, d) == false
-  public static boolean run(JNode source, JNode target) {
-      if(source == target){
+	
+  public static boolean equalNodes(JNode source, JNode target) {
+	  boolean result = false;
+
+		  if(source.value == target.value) {
+			  if(source.edges.size() == target.edges.size()) {
+				  if(source.edges.size() == 0) {
+					  result = true;
+				  } else {
+					  for(int i=0; i< source.edges.size();i++) {
+						  result = equalNodes(source.edges.get(i), target.edges.get(i));
+					  }
+				  }
+			  }
+		  }	  
+
+		  
+	  
+	  
+	 return result;
+  }
+  public static boolean run(JNode source, JNode target) {  
+	  if(source == target){
 		  return true;
 	  }
-	  
+	 if(JConnectedGraph.equalNodes(source, target)) {
+		  return true;
+	  }
 	  for(JNode child : source.edges) {
 		  if(JConnectedGraph.run(child,target)){
 			  return true;
@@ -42,3 +66,5 @@ public class JConnectedGraph {
   }
 
 }
+
+
