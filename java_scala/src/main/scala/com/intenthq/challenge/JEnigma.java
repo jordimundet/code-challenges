@@ -2,6 +2,7 @@ package com.intenthq.challenge;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class JEnigma {
 
@@ -26,7 +27,10 @@ public class JEnigma {
   // Check the tests for some other (simpler) examples.
 
   private final Map<Integer, Character> map;
-
+ 
+  static int maxDigits;
+  static String decodedMessage;
+  
   private JEnigma(final Map<Integer, Character> map) {
     this.map = map;
   }
@@ -36,7 +40,72 @@ public class JEnigma {
   }
 
   public String deciphe(List<Integer> message) {
-    throw new RuntimeException("Not implemented");
+	  maxDigits = MaxDigitsDictionary();
+	  List<Integer> messageAuxiliar= message;
+
+	  decodedMessage = "";
+	  if(message.size() < maxDigits) {
+		  maxDigits = message.size();
+	  }
+	  return decodeSubmessage(messageAuxiliar,messageAuxiliar.subList(0, maxDigits),maxDigits);
+
+	
+	
+	 
   }
+
+private String decodeSubmessage(List<Integer> message, List<Integer> submessage, int numDigits) {
+	int submessageInt = convertToInt(submessage, numDigits);
+
+	if(map.containsKey(submessageInt)) {
+			message = message.subList(numDigits, message.size());
+			decodedMessage = decodedMessage + map.get(submessageInt).toString();
+			if(message.size() == 0) {
+				return decodedMessage;
+			} else if(message.size() < maxDigits) {
+				maxDigits = message.size();
+				
+			}
+			return decodeSubmessage(message,message.subList(0,maxDigits),maxDigits);
+	} else {
+		if(submessage.size() == 1) {
+			message = message.subList(1, message.size());
+			decodedMessage = decodedMessage + submessage.get(0).toString();
+			if(message.size() == 0) {
+				return decodedMessage;
+			} else if(message.size() < maxDigits) {
+				maxDigits = message.size();				
+			}
+			return decodeSubmessage(message,message.subList(0,maxDigits),maxDigits);
+		} else {
+			if(message.size() == 0) {
+				return decodedMessage;
+			} else if(message.size() < maxDigits) {
+				maxDigits = message.size();				
+			}
+			return decodeSubmessage(message,message.subList(0,numDigits-1),numDigits-1);
+		}
+	}
+	//return "ERROR";
+}
+
+private int convertToInt(List<Integer> submessage, int maxDigits) {
+	int result = 0;
+	for(int i=maxDigits-1; i>=0;i--) {
+		result = result + submessage.get(i)*(int)Math.pow(10,maxDigits-(i+1));
+	}
+	return result;
+}
+
+private int MaxDigitsDictionary() {
+	int digits = 1;
+	for(Entry<Integer, Character> code : map.entrySet()) {
+		int codeDigits = String.valueOf(code.getKey()).length();
+		if(codeDigits > digits) {
+			digits = codeDigits;
+		}
+	}
+	return digits;
+}
 
 }
